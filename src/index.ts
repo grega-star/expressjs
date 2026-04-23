@@ -1,13 +1,20 @@
-import { config } from 'dotenv';
+const express = require('express');
+const app = express();
 
-if (process.env.NODE_ENV !== 'production') {
-  config();
-}
-// call after config() to access the env variables
-import { app } from './api';
+app.use(express.json());
 
-const port = process.env.PORT || 3333;
+app.get('/', (req, res) => {
+  const challenge = req.query['hub.challenge'];
+  if (challenge) {
+    res.send(challenge);
+  } else {
+    res.send('OK');
+  }
+});
 
-app.listen(port, () =>
-  console.log(`API available on http://localhost:${port}`)
-);
+app.post('/', (req, res) => {
+  console.log(JSON.stringify(req.body, null, 2));
+  res.send('OK');
+});
+
+app.listen(process.env.PORT || 3000);
